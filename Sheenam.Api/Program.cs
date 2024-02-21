@@ -3,6 +3,8 @@
 // Free To Use Comfort and Peace
 //==================================================
 
+using Sheenam.Api.Brokers.Storages;
+
 namespace Sheenam.Api
 {
     public class Program
@@ -16,6 +18,7 @@ namespace Sheenam.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+            //builder.Services.AddDbContext<StorageBroker>(); men qushganman
 
             var app = builder.Build();
 
