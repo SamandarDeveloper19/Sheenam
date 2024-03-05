@@ -3,6 +3,7 @@
 // Free To Use Comfort and Peace
 //==================================================
 
+using Sheenam.Api.Brokers.Loggings;
 using Sheenam.Api.Brokers.Storages;
 
 namespace Sheenam.Api
@@ -19,7 +20,7 @@ namespace Sheenam.Api
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
             builder.Services.AddDbContext<StorageBroker>();
-            builder.Services.AddTransient<IStorageBroker, StorageBroker>();
+            AddBrokers(builder);
 
             var app = builder.Build();
 
@@ -34,6 +35,12 @@ namespace Sheenam.Api
             app.UseAuthorization();
             app.MapControllers();
             app.Run();
+        }
+
+        private static void AddBrokers(WebApplicationBuilder builder)
+        {
+            builder.Services.AddTransient<IStorageBroker, StorageBroker>();
+            builder.Services.AddTransient<ILoggingBroker, LoggingBroker>();
         }
     }
 }
