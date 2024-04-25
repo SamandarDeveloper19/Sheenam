@@ -5,5 +5,6 @@ namespace Sheenam.Api.Services.Foundations.Guests
     public interface IGuestService
     {
         ValueTask<Guest> AddGuestAsync(Guest guest);
+        IQueryable<Guest> RetrieveAllGuests();
     }
 }
