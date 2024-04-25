@@ -42,5 +42,14 @@ namespace Sheenam.Api.Brokers.Storages
 
             return guest;
         }
+
+        public async ValueTask<Guest> DeleteGuestAsync(Guest guest)
+        {
+            using var broker = new StorageBroker(this.configuration);
+            broker.Entry(guest).State = EntityState.Deleted;
+            await broker.SaveChangesAsync();
+
+            return guest;
+        }
     }
 }
