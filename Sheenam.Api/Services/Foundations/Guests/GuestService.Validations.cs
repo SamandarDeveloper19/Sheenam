@@ -55,6 +55,11 @@ namespace Sheenam.Api.Services.Foundations.Guests
         private void ValidateGuestIdOnRetrieveById(Guid guestId) =>
             Validate((Rule: IsInvalid(guestId), Parameter: nameof(Guest.Id)));
 
+        private void ValidateGuestOnModify(Guest guest)
+        {
+            ValidateGuestNotNull(guest);
+        }
+
         private static void Validate(params (dynamic Rule, string Parameter)[] validations)
         {
             var invalidGuestException = new InvalidGuestException();
