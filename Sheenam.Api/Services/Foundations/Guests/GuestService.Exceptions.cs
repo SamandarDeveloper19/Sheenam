@@ -9,6 +9,7 @@ namespace Sheenam.Api.Services.Foundations.Guests
     public partial class GuestService
     {
         private delegate ValueTask<Guest> ReturningGuestFunction();
+        private delegate IQueryable<Guest> ReturningGuestsFunction();
 
         private async ValueTask<Guest> TryCatch(ReturningGuestFunction returningGuestFunction)
         {
@@ -44,6 +45,21 @@ namespace Sheenam.Api.Services.Foundations.Guests
                     new FailedGuestServiceException(exception);
 
                 throw CreateAndLogServiceException(failedGuestServiceException);
+            }
+        }
+
+        private IQueryable<Guest> TryCatch(ReturningGuestsFunction returningGuestsFunction)
+        {
+            try
+            {
+                return returningGuestsFunction();
+            }
+            catch (SqlException sqlException)
+            {
+                var failedGuestStorageException =
+                    new FailedGuestStorageException(sqlException);
+
+                throw CreateAndLogCriticalDependencyException(failedGuestStorageException);
             }
         }
 
