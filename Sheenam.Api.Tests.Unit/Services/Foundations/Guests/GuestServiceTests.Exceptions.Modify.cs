@@ -123,5 +123,44 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             this.storageBrokerMock.VerifyNoOtherCalls();
             this.loggingBrokerMock.VerifyNoOtherCalls();
         }
+
+        [Fact]
+        public async Task ShouldThrowServiceExceptionOnModifyIfServiceErrorOccursAndLogItAsync()
+        {
+            // given
+            Guest randomGuest = CreateRandomGuest();
+            Guest someGuest = randomGuest;
+            var serviceException = new Exception();
+
+            var failedGuestServiceException =
+                new FailedGuestServiceException(serviceException);
+
+            var expectedGuestServiceException =
+                new GuestServiceException(failedGuestServiceException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.UpdateGuestAsync(someGuest))
+                .ThrowsAsync(serviceException);
+
+            // when
+            ValueTask<Guest> modifyGuestTask =
+                this.guestService.ModifyGuestAsync(someGuest);
+
+            // then
+            await Assert.ThrowsAsync<GuestServiceException>(() =>
+                modifyGuestTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateGuestAsync(someGuest),
+                Times.Once);
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogError(It.Is(SameExceptionAs(
+                    expectedGuestServiceException))),
+                    Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
     }
 }
