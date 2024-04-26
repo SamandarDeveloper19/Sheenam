@@ -52,6 +52,9 @@ namespace Sheenam.Api.Services.Foundations.Guests
             Message = "Value is invalid"
         };
 
+        private void ValidateGuestIdOnRetrieveById(Guid guestId) =>
+            Validate((Rule: IsInvalid(guestId), Parameter: nameof(Guest.Id)));
+
         private static void Validate(params (dynamic Rule, string Parameter)[] validations)
         {
             var invalidGuestException = new InvalidGuestException();
