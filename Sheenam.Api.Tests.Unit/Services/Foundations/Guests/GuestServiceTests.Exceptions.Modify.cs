@@ -1,4 +1,5 @@
-﻿using Moq;
+﻿using Microsoft.EntityFrameworkCore;
+using Moq;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 
@@ -23,6 +24,45 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             this.storageBrokerMock.Setup(broker =>
                 broker.UpdateGuestAsync(someGuest))
                 .ThrowsAsync(sqlException);
+
+            // when
+            ValueTask<Guest> modifyGuestTask =
+                this.guestService.ModifyGuestAsync(someGuest);
+
+            // then
+            await Assert.ThrowsAsync<GuestDependencyException>(() =>
+                modifyGuestTask.AsTask());
+
+            this.storageBrokerMock.Verify(broker =>
+                broker.UpdateGuestAsync(someGuest),
+                Times.Once());
+
+            this.loggingBrokerMock.Verify(broker =>
+                broker.LogCritical(It.Is(SameExceptionAs(
+                    expectedGuestDependencyException))),
+                    Times.Once);
+
+            this.storageBrokerMock.VerifyNoOtherCalls();
+            this.loggingBrokerMock.VerifyNoOtherCalls();
+        }
+
+        [Fact]
+        public async Task ShouldThrowDependencyExceptionOnModifyIfDatabaseUpdateExceptionOccursAndLogItAsync()
+        {
+            // given
+            Guest randomGuest = CreateRandomGuest();
+            Guest someGuest = randomGuest;
+            var dbUpdateException = new DbUpdateException();
+
+            var failedGuestStorageException =
+                new FailedGuestStorageException(dbUpdateException);
+
+            var expectedGuestDependencyException =
+                new GuestDependencyException(failedGuestStorageException);
+
+            this.storageBrokerMock.Setup(broker =>
+                broker.UpdateGuestAsync(someGuest))
+                .ThrowsAsync(dbUpdateException);
 
             // when
             ValueTask<Guest> modifyGuestTask =
