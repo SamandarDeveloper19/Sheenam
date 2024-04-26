@@ -31,5 +31,9 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 return this.storageBroker.SelectAllGuests();
             });
 
+        public ValueTask<Guest> RetrieveGuestByIdAsync(Guid guestId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
