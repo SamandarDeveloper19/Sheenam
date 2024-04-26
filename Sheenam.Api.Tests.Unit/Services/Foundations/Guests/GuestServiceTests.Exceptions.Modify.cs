@@ -22,7 +22,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
 
             this.storageBrokerMock.Setup(broker =>
                 broker.UpdateGuestAsync(someGuest))
-                .ThrowsAsync(expectedGuestDependencyException);
+                .ThrowsAsync(sqlException);
 
             // when
             ValueTask<Guest> modifyGuestTask =
