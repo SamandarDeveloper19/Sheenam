@@ -12,7 +12,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
             // given
             Guid someGuestId = Guid.NewGuid();
             Guid inputGuestId = someGuestId;
-            var sqlException = new Exception();
+            var sqlException = GetSqlError();
 
             var failedGuestStorageException =
                 new FailedGuestStorageException(sqlException);
