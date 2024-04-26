@@ -39,9 +39,9 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 return this.storageBroker.SelectGuestByIdAsync(guestId);
             });
 
-        public ValueTask<Guest> ModifyGuestAsync(Guest guest)
+        public async ValueTask<Guest> ModifyGuestAsync(Guest guest)
         {
-            throw new NotImplementedException();
+            return await this.storageBroker.UpdateGuestAsync(guest);
         }
     }
 }

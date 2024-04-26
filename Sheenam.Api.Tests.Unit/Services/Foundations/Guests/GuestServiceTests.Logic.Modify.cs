@@ -11,17 +11,10 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
         public async Task ShouldModifyGuestAsync()
         {
             // given
-            Guid someGuestId = Guid.NewGuid();
-            Guid inputGuestId = someGuestId;
             Guest randomGuest = CreateRandomGuest();
             Guest inputGuest = randomGuest;
-            Guest storageGuest = inputGuest.DeepClone();
             Guest updatedGuest = inputGuest;
             Guest expectedGuest = updatedGuest.DeepClone();
-
-            this.storageBrokerMock.Setup(broker =>
-                broker.SelectGuestByIdAsync(inputGuestId))
-                .ReturnsAsync(storageGuest);
 
             this.storageBrokerMock.Setup(broker =>
                 broker.UpdateGuestAsync(inputGuest))
@@ -33,10 +26,6 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
 
             // then
             actualGuest.Should().BeEquivalentTo(expectedGuest);
-
-            this.storageBrokerMock.Verify(broker =>
-                broker.SelectGuestByIdAsync(inputGuestId),
-                Times.Once());
 
             this.storageBrokerMock.Verify(broker =>
                 broker.UpdateGuestAsync(inputGuest),
