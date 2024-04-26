@@ -32,11 +32,11 @@ namespace Sheenam.Api.Services.Foundations.Guests
             });
 
         public ValueTask<Guest> RetrieveGuestByIdAsync(Guid guestId) =>
-            TryCatch(() =>
+            TryCatch(async () =>
             {
                 ValidateGuestIdOnRetrieveById(guestId);
 
-                return this.storageBroker.SelectGuestByIdAsync(guestId);
+                return await this.storageBroker.SelectGuestByIdAsync(guestId);
             });
 
         public ValueTask<Guest> ModifyGuestAsync(Guest guest) =>
