@@ -1,5 +1,6 @@
 ﻿using EFxceptions.Models.Exceptions;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Sheenam.Api.Models.Foundations.Guests;
 using Sheenam.Api.Models.Foundations.Guests.Exceptions;
 using Xeptions;
@@ -42,6 +43,13 @@ namespace Sheenam.Api.Services.Foundations.Guests
             catch (NotFoundGuestException notFoundGuestException)
             {
                 throw CreateAndLogValidationException(notFoundGuestException);
+            }
+            catch (DbUpdateException dbUpdateException)
+            {
+                var failedGuestStorageException =
+                    new FailedGuestStorageException(dbUpdateException);
+
+                throw CreateAndLogCriticalDependencyException(failedGuestStorageException);
             }
             catch (Exception exception)
             {
