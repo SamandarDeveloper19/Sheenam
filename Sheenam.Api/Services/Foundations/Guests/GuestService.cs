@@ -34,7 +34,7 @@ namespace Sheenam.Api.Services.Foundations.Guests
         public ValueTask<Guest> RetrieveGuestByIdAsync(Guid guestId) =>
             TryCatch(async () =>
             {
-                ValidateGuestIdOnRetrieveById(guestId);
+                ValidateGuestId(guestId);
 
                 return await this.storageBroker.SelectGuestByIdAsync(guestId);
             });
@@ -45,6 +45,19 @@ namespace Sheenam.Api.Services.Foundations.Guests
                 ValidateGuestOnModify(guest);
 
                 return await this.storageBroker.UpdateGuestAsync(guest);
+            });
+
+        public ValueTask<Guest> RemoveGuestByIdAsync(Guid guestId) =>
+            TryCatch(async () =>
+            {
+                ValidateGuestId(guestId);
+
+                Guest maybeGuest =
+                    await this.storageBroker.SelectGuestByIdAsync(guestId);
+
+                ValidateStorageGuest(maybeGuest, guestId);
+
+                return await this.storageBroker.DeleteGuestAsync(maybeGuest);
             });
     }
 }
