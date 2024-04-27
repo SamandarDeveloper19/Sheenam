@@ -56,8 +56,8 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 new GuestValidationException(notFoundGuestException);
 
             this.storageBrokerMock.Setup(broker =>
-                broker.SelectGuestByIdAsync(inputGuestId))
-                .Throws(notFoundGuestException);
+                broker.SelectGuestByIdAsync(It.IsAny<Guid>()))
+                .ReturnsAsync(noGuest);
 
             // when
             ValueTask<Guest> retrieveGuestByIdTask =
@@ -68,7 +68,7 @@ namespace Sheenam.Api.Tests.Unit.Services.Foundations.Guests
                 retrieveGuestByIdTask.AsTask());
 
             this.storageBrokerMock.Verify(broker =>
-                broker.SelectGuestByIdAsync(inputGuestId),
+                broker.SelectGuestByIdAsync(It.IsAny<Guid>()),
                 Times.Once);
 
             this.loggingBrokerMock.Verify(broker =>
